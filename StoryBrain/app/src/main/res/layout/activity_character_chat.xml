@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- character chat layout: Apple iMessage-like design style -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/wechat_bg">
+
+    <!-- 顶部导航栏 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/wechat_title_bar"
+        app:titleTextColor="@color/wechat_title_text"
+        app:titleTextAppearance="@style/StoryBrain.ToolbarTitle"
+        android:elevation="0dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wechat_divider" />
+
+    <!-- 聊天气泡列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="24dp"
+        android:scrollbars="none"
+        android:overScrollMode="never" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wechat_divider" />
+
+    <!-- 底部输入栏：仿 iMessage 输入容器 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/wechat_title_bar"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="12dp"
+        android:gravity="center_vertical">
+
+        <!-- Pill Chat Input Box -->
+        <EditText
+            android:id="@+id/etInput"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_chat_input_field"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textSize="14sp"
+            android:textColor="@color/wechat_title_text"
+            android:hint="向 Ta 发送消息…"
+            android:textColorHint="@color/wechat_hint"
+            android:inputType="text"
+            android:maxLines="3"
+            android:gravity="center_vertical" />
+
+        <!-- iOS iMessage Style Send Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSend"
+            style="@style/StoryBrain.Button.Primary"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_marginStart="10dp"
+            android:text="发送"
+            android:textSize="13sp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 书本主体 -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M30,34 L30,78 C30,78 42,74 54,74 C66,74 78,78 78,78 L78,34 C78,34 66,30 54,30 C42,30 30,34 30,34 Z" />
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M54,32 L54,74" />
+    <!-- 脑回纹（象征“故事大脑”） -->
+    <path
+        android:strokeColor="@color/wechat_green"
+        android:strokeWidth="2.4"
+        android:strokeLineCap="round"
+        android:fillColor="#00000000"
+        android:pathData="M38,44 C42,44 42,50 46,50 C50,50 50,44 54,44 M58,44 C62,44 62,50 66,50 M38,60 C42,60 42,66 46,66 C50,66 50,60 54,60 C58,60 58,66 62,66 C66,66 66,60 70,60" />
+</vector>

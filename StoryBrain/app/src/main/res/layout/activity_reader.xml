@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- ReaderActivity：iOS风格阅读页面 -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/wechat_bg">
+
+    <!-- 顶部工具栏：iOS NavigationBar 风格 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/wechat_title_bar"
+        android:elevation="0dp"
+        app:titleTextColor="@color/wechat_title_text"
+        app:titleTextAppearance="@style/StoryBrain.ToolbarTitle" />
+
+    <!-- 细分隔线（toolbar 下方） -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wechat_divider" />
+
+    <!-- 流水线状态栏：精简提示 -->
+    <TextView
+        android:id="@+id/pipelineStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:textSize="11sp"
+        android:textColor="@color/wechat_hint"
+        android:letterSpacing="0.01"
+        android:background="@color/apple_fill_secondary"
+        android:visibility="visible" />
+
+    <!-- 聊天气泡列表 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/chatRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:scrollbars="none" />
+
+    <!-- 底部控制栏：iOS Tab Bar 风格 -->
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wechat_divider" />
+
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/wechat_title_bar"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <!-- 当前章节标题 -->
+        <TextView
+            android:id="@+id/chapterLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:textColor="@color/wechat_hint"
+            android:letterSpacing="-0.01"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:paddingBottom="5dp" />
+
+        <!-- 阅读进度条：细线风格 -->
+        <ProgressBar
+            android:id="@+id/readProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="6dp"
+            android:progressTint="@color/wechat_green"
+            android:progressBackgroundTint="@color/apple_fill_tertiary"
+            android:max="100" />
+
+        <!-- 章节导航按钮行 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnPrev"
+                style="@style/StoryBrain.Button.Outlined"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="上一章"
+                android:textSize="13sp" />
+
+            <Button
+                android:id="@+id/btnChapter"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1.2"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
+                android:text="章节目录"
+                android:textSize="12sp"
+                android:textColor="@color/wechat_hint" />
+
+            <Button
+                android:id="@+id/btnNext"
+                style="@style/StoryBrain.Button.Primary"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="下一章"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- 辅助功能按钮行：字体 + 夜间 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="3dp">
+
+            <Button
+                android:id="@+id/btnFontDown"
+                style="@style/StoryBrain.Button.Text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="36dp"
+                android:text="A−"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnFontUp"
+                style="@style/StoryBrain.Button.Text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="36dp"
+                android:text="A+"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnNight"
+                style="@style/StoryBrain.Button.Text"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="36dp"
+                android:text="🌙 夜间"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

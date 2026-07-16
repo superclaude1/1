@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/wechat_bg">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/wechat_title_bar"
+        app:titleTextColor="@color/wechat_title_text" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:background="@color/wechat_status_bar">
+
+        <EditText
+            android:id="@+id/editQuery"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:hint="搜索人物名 / 台词 / 场景…"
+            android:textSize="14sp"
+            android:background="@android:color/white"
+            android:padding="8dp"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:singleLine="true" />
+
+        <Button
+            android:id="@+id/btnSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="8dp"
+            android:text="搜索"
+            android:backgroundTint="@color/wechat_green"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textSize="12sp"
+        android:textColor="@color/wechat_hint"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/resultRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="6dp" />
+
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="输入关键词搜索全书"
+            android:textColor="@color/wechat_hint"
+            android:textSize="14sp"
+            android:visibility="gone" />
+    </FrameLayout>
+</LinearLayout>

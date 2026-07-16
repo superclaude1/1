@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- ============================================================
+         Light Mode Theme（苹果 iOS 浅色风格）
+         ============================================================ -->
+    <style name="Theme.StoryBrain" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Brand Primary -->
+        <item name="colorPrimary">@color/wechat_green</item>
+        <item name="colorPrimaryVariant">@color/wechat_green</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorSecondary">@color/apple_blue</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+
+        <!-- Status bar: White with dark icons (iOS style) -->
+        <item name="android:statusBarColor" tools:targetApi="l">@color/wechat_title_bar</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/wechat_title_bar</item>
+
+        <!-- Window background -->
+        <item name="android:windowBackground">@color/wechat_bg</item>
+
+        <!-- Typography: prefer system default (Roboto which resembles SF Pro) -->
+        <item name="android:fontFamily">sans-serif</item>
+
+        <!-- Ripple: use a subtle ripple on light bg -->
+        <item name="rippleColor">@color/apple_separator</item>
+
+        <!-- Card style -->
+        <item name="materialCardViewStyle">@style/StoryBrain.CardView</item>
+
+        <!-- Bottom nav bar color -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+    </style>
+
+    <!-- ============================================================
+         Night Mode Theme（苹果 iOS 深色风格）
+         ============================================================ -->
+    <style name="Theme.StoryBrain.Dark" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="colorPrimary">@color/wechat_green</item>
+        <item name="colorPrimaryVariant">@color/wechat_green</item>
+        <item name="colorOnPrimary">@android:color/black</item>
+        <item name="colorSecondary">@color/apple_blue</item>
+        <item name="colorOnSecondary">@android:color/white</item>
+
+        <item name="android:statusBarColor" tools:targetApi="l">@color/night_title_bar</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
+        <item name="android:navigationBarColor" tools:targetApi="l">@color/night_title_bar</item>
+        <item name="android:windowBackground">@color/night_bg</item>
+        <item name="android:fontFamily">sans-serif</item>
+
+        <item name="materialCardViewStyle">@style/StoryBrain.CardView.Dark</item>
+    </style>
+
+    <!-- ============================================================
+         MaterialCardView Styles
+         ============================================================ -->
+    <style name="StoryBrain.CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/wechat_white</item>
+        <item name="cardCornerRadius">14dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/apple_separator</item>
+        <item name="strokeWidth">0.5dp</item>
+    </style>
+
+    <style name="StoryBrain.CardView.Dark" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/night_title_bar</item>
+        <item name="cardCornerRadius">14dp</item>
+        <item name="cardElevation">0dp</item>
+        <item name="strokeColor">@color/night_divider</item>
+        <item name="strokeWidth">0.5dp</item>
+    </style>
+
+    <!-- ============================================================
+         Button Styles (iOS-like pill buttons)
+         ============================================================ -->
+    <style name="StoryBrain.Button.Primary" parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/wechat_green</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="rippleColor">@color/wechat_white</item>
+    </style>
+
+    <style name="StoryBrain.Button.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="strokeColor">@color/wechat_green</item>
+        <item name="android:textColor">@color/wechat_green</item>
+        <item name="cornerRadius">12dp</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="StoryBrain.Button.Text" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:textColor">@color/wechat_title_text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <!-- ============================================================
+         Toolbar Style
+         ============================================================ -->
+    <style name="StoryBrain.Toolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="titleTextAppearance">@style/StoryBrain.ToolbarTitle</item>
+        <item name="android:background">@color/wechat_title_bar</item>
+        <item name="elevation">0dp</item>
+    </style>
+
+    <style name="StoryBrain.ToolbarTitle" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textColor">@color/wechat_title_text</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:letterSpacing">-0.01</item>
+    </style>
+
+</resources>

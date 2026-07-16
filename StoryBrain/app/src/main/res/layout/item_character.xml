@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- item character: iOS style table view cell -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical"
+        android:background="?android:attr/selectableItemBackground">
+
+        <!-- 头像 -->
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp">
+
+            <TextView
+                android:id="@+id/avatarBg"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_avatar" />
+
+            <TextView
+                android:id="@+id/avatarText"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@android:color/white" />
+        </FrameLayout>
+
+        <!-- 信息 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="14dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvCharName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/wechat_title_text" />
+
+            <TextView
+                android:id="@+id/tvCharAliases"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:textSize="12sp"
+                android:textColor="@color/wechat_hint"
+                android:maxLines="1"
+                android:ellipsize="end" />
+        </LinearLayout>
+
+        <!-- 聊天按钮 -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnChat"
+            style="@style/StoryBrain.Button.Outlined"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="聊天"
+            android:textSize="12sp"
+            app:icon="@android:drawable/stat_notify_chat"
+            app:iconSize="12dp"
+            app:iconTint="@color/wechat_green"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
+
+    </LinearLayout>
+
+    <!-- ios divider line -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginStart="64dp"
+        android:background="@color/apple_separator" />
+</LinearLayout>

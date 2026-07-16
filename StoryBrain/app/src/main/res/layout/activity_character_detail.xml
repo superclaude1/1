@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- character detail layout: Apple HIG Card-grouped design style -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/wechat_bg">
+
+    <!-- 顶部导航栏 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/wechat_title_bar"
+        app:titleTextColor="@color/wechat_title_text"
+        app:titleTextAppearance="@style/StoryBrain.ToolbarTitle"
+        android:elevation="0dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wechat_divider" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="40dp">
+
+                <!-- 角色头部：头像首字 + 标准名 + 别称 -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/StoryBrain.CardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/avatarText"
+                            android:layout_width="52dp"
+                            android:layout_height="52dp"
+                            android:gravity="center"
+                            android:textSize="22sp"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/bg_avatar" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="14dp"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/nameText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/wechat_title_text"
+                                android:textSize="17sp"
+                                android:fontFamily="sans-serif-medium"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/aliasesText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="3dp"
+                                android:textColor="@color/wechat_hint"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnChat"
+                            style="@style/StoryBrain.Button.Outlined"
+                            android:layout_width="wrap_content"
+                            android:layout_height="32dp"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:text="聊天"
+                            android:textSize="12sp"
+                            app:icon="@android:drawable/stat_notify_chat"
+                            app:iconSize="12dp"
+                            app:iconTint="@color/wechat_green"
+                            android:insetTop="0dp"
+                            android:insetBottom="0dp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 关系网标题 -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="人物关系网"
+                    android:textColor="@color/wechat_hint"
+                    android:textSize="12sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.03" />
+
+                <!-- 关系网容器 -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/StoryBrain.CardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp">
+
+                    <LinearLayout
+                        android:id="@+id/relationContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- 出场章节标题 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="出场章节"
+                        android:textColor="@color/wechat_hint"
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.03" />
+
+                    <TextView
+                        android:id="@+id/appearanceHint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/wechat_hint"
+                        android:textSize="11sp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <!-- 出场章节容器 -->
+                <com.google.android.material.card.MaterialCardView
+                    style="@style/StoryBrain.CardView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/appearanceContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="8dp" />
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+        </ScrollView>
+
+        <TextView
+            android:id="@+id/emptyText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:textColor="@color/wechat_hint"
+            android:text="未找到该角色信息"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/wechat_green"
+            android:visibility="visible" />
+    </FrameLayout>
+</LinearLayout>

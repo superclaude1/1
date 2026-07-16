@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- iOS-style 对话气泡：白底，均匀大圆角，左上角微缩表示对方 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#FFFFFF" />
+    <corners
+        android:topLeftRadius="5dp"
+        android:topRightRadius="16dp"
+        android:bottomLeftRadius="16dp"
+        android:bottomRightRadius="16dp" />
+    <stroke
+        android:width="0.5dp"
+        android:color="#E5E5EA" />
+</shape>

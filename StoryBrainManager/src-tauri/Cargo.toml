@@ -1,0 +1,32 @@
+[package]
+name = "voxnovel"
+version = "0.1.0"
+description = "VoxNovel - 低成本跨平台小说广播剧制作工具"
+edition = "2021"
+
+[lib]
+name = "voxnovel_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-fs = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-notification = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["full"] }
+reqwest = { version = "0.12", features = ["json"] }
+symphonia = { version = "0.5", features = ["wav", "pcm"] }
+wavers = "1.4"
+cpal = "0.15"
+hound = "3"
+uuid = { version = "1", features = ["v4"] }
+thiserror = "1"
+anyhow = "1"
+
+# Windows 桌面首期先跑通；tauri-plugin-audio-recorder / tauri-plugin-native-audio
+# 在 Phase 2（Android 移植）时再引入，避免过早引入移动端专属依赖

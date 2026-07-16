@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="6dp"
+    android:paddingBottom="6dp">
+
+    <!-- 角色发送的消息（居左） -->
+    <LinearLayout
+        android:id="@+id/layoutLeft"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="start|top"
+        android:visibility="visible">
+
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp">
+            <TextView
+                android:id="@+id/avatarBgLeft"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_avatar" />
+            <TextView
+                android:id="@+id/avatarTextLeft"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@android:color/white" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tvMessageLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/bg_bubble_left"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:textColor="@color/wechat_bubble_text"
+            android:maxWidth="260dp" />
+    </LinearLayout>
+
+    <!-- 用户自己发送的消息（居右） -->
+    <LinearLayout
+        android:id="@+id/layoutRight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end|top"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvMessageRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_bubble_right"
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:textColor="@color/wechat_bubble_text"
+            android:maxWidth="260dp" />
+
+        <FrameLayout
+            android:layout_width="40dp"
+            android:layout_height="40dp">
+            <TextView
+                android:id="@+id/avatarBgRight"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/bg_avatar"
+                android:backgroundTint="@color/wechat_green" />
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:text="我"
+                android:textColor="@android:color/white" />
+        </FrameLayout>
+    </LinearLayout>
+</FrameLayout>

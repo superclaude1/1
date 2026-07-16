@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- bookshelf main layout: Apple HIG layout style -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/wechat_bg">
+
+    <!-- 顶部导航栏 -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/wechat_title_bar"
+        app:titleTextColor="@color/wechat_title_text"
+        app:titleTextAppearance="@style/StoryBrain.ToolbarTitle"
+        app:title="故事大脑"
+        android:elevation="0dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wechat_divider" />
+
+    <!-- 仪表盘统计卡片 -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/statsCard"
+        style="@style/StoryBrain.CardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvTotalBooks"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/wechat_title_text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="书架藏书"
+                    android:textSize="11sp"
+                    android:textColor="@color/wechat_hint" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/apple_separator" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvTotalChapters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/wechat_title_text" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="总章节数"
+                    android:textSize="11sp"
+                    android:textColor="@color/wechat_hint" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="0.5dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:background="@color/apple_separator" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvTotalAnalyzed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold"
+                    android:textColor="@color/wechat_green" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="已分析章"
+                    android:textSize="11sp"
+                    android:textColor="@color/wechat_hint" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- 主体区域（列表或空状态） -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- 空书架提示 -->
+        <LinearLayout
+            android:id="@+id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="书架空空如也"
+                android:textSize="17sp"
+                android:fontFamily="sans-serif-medium"
+                android:textColor="@color/wechat_title_text" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="点击下方按钮导入 TXT 小说，开启分析之旅"
+                android:textSize="13sp"
+                android:textColor="@color/wechat_hint"
+                android:gravity="center" />
+        </LinearLayout>
+
+        <!-- 书架列表 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bookListRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="24dp"
+            android:scrollbars="none" />
+    </FrameLayout>
+
+    <!-- 状态提示 -->
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp"
+        android:textSize="12sp"
+        android:textColor="@color/wechat_hint"
+        android:gravity="center"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/wechat_divider" />
+
+    <!-- 底部操作栏 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:background="@color/wechat_title_bar"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:gravity="center_vertical">
+
+        <!-- Labeled Pill Primary Button for Importing -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPickFile"
+            style="@style/StoryBrain.Button.Primary"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="导入书籍"
+            android:textSize="13sp"
+            app:icon="@android:drawable/ic_input_add"
+            app:iconTint="@android:color/white"
+            app:iconSize="16dp" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <!-- Outlined Settings Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSettings"
+            style="@style/StoryBrain.Button.Text"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="设置"
+            android:textSize="13sp"
+            android:textColor="@color/wechat_hint"
+            app:icon="@android:drawable/ic_menu_preferences"
+            app:iconTint="@color/wechat_hint"
+            app:iconSize="16dp" />
+    </LinearLayout>
+</LinearLayout>

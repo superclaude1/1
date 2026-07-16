@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 书目封面色块背景：iOS squircle，渐变 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#34C759"
+        android:endColor="#30D158"
+        android:angle="135" />
+    <corners android:radius="10dp" />
+</shape>

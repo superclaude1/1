@@ -1,0 +1,105 @@
+# ============================================
+# StoryBrain 项目根 .gitignore
+# ============================================
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+*.spec.bak
+*.manifest
+*.exe
+*.egg
+.Python
+env/
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# --- Node.js / Frontend ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# --- Rust / Tauri ---
+**/target/
+**/Cargo.lock
+
+# --- Android ---
+*.iml
+.gradle/
+**/build/
+**/captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+*.apk
+*.aab
+*.jks
+*.keystore
+!gradle/wrapper/gradle-wrapper.jar
+
+# --- IDE ---
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+.vscode/
+*.code-workspace
+
+# --- TTS / Audio ---
+*.wav
+*.mp3
+*.ogg
+*.flac
+!test-assets/
+!assets/audio/
+
+# --- Models (large files) ---
+models/
+*.onnx
+*.pt
+*.pth
+*.bin
+*.safetensors
+!**/test-assets/
+
+# --- Temp / Cache ---
+temp_references/
+custom_voices/
+*.log
+*.cache
+*.tmp
+
+# --- Environment / Secrets ---
+.env
+.env.local
+.env.*.local
+*.secret
+tts_config.json
+
+# --- OS ---
+Desktop.ini
+$RECYCLE.BIN/
+
+# --- Archives ---
+*.zip
+*.7z
+*.rar
+
+# --- Generated ---
+generated_audio/
+output/
+*.generated.*

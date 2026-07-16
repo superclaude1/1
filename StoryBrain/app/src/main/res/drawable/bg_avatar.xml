@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 角色头像：iOS 风格圆角矩形（superellipse），品牌绿色填充 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#34C759" />
+    <corners android:radius="12dp" />
+</shape>

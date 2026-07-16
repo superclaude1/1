@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==============================
+   Apple Design Aesthetics - Base
+   ============================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: #0a0e1a;
+  color: #e2e8f0;
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* ==============================
+   Custom Scrollbar (macOS-style)
+   ============================== */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* ==============================
+   Range Slider (Apple-style)
+   ============================== */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 9999px;
+  background: rgba(255,255,255,0.08);
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 8px rgba(0,0,0,0.4);
+  cursor: pointer;
+  transition: transform 0.12s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* ==============================
+   Checkbox (Apple Toggle-style)
+   ============================== */
+input[type="checkbox"] {
+  width: 38px;
+  height: 22px;
+  border-radius: 11px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+  cursor: pointer;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+input[type="checkbox"]::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  transition: left 0.22s ease, background 0.22s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+input[type="checkbox"]:checked {
+  background: #10b981;
+  border-color: #10b981;
+}
+input[type="checkbox"]:checked::after {
+  left: calc(100% - 18px);
+  background: white;
+}
+
+/* ==============================
+   Select (Apple-style)
+   ============================== */
+select {
+  color: #e2e8f0;
+}
+select option {
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+/* ==============================
+   Global animation utilities
+   ============================== */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slideUp {
+  animation: slideUp 0.3s ease forwards;
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(16,185,129,0.2); }
+  50%       { box-shadow: 0 0 22px rgba(16,185,129,0.4); }
+}
+.glow-pulse {
+  animation: glowPulse 2s ease-in-out infinite;
+}

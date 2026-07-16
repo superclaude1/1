@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>故事大脑可视化</title>
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 24, 39, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --active-color: #10b981;
+            --active-glow: rgba(16, 185, 129, 0.5);
+            --suspended-color: #f59e0b;
+            --suspended-glow: rgba(245, 158, 11, 0.5);
+            --completed-color: #6b7280;
+            --completed-glow: rgba(107, 114, 128, 0.3);
+        }
+
+        /* 浅色模式适配 */
+        body.light-mode {
+            --bg-color: #f3f4f6;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --accent-color: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.2);
+            --active-color: #059669;
+            --active-glow: rgba(5, 150, 105, 0.2);
+            --suspended-color: #d97706;
+            --suspended-glow: rgba(217, 119, 6, 0.2);
+            --completed-color: #9ca3af;
+            --completed-glow: rgba(156, 163, 175, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* 主体布局：剧情树 */
+        #plotContainer {
+            flex: 1;
+            height: 100%;
+            position: relative;
+        }
+
+        #plotChart {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 顶部信息栏 */
+        .header-bar {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            z-index: 10;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px);
+            padding: 10px 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-bar h1 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .header-bar p {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        /* 详情抽屉/面板 */
+        #detailPanel {
+            width: 380px;
+            height: 100%;
+            background: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 20;
+        }
+
+        #detailPanel.collapsed {
+            transform: translateX(100%);
+            position: absolute;
+            right: 0;
+        }
+
+        /* 移动端抽屉适配 */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            #detailPanel {
+                width: 100%;
+                height: 50vh;
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+                box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.2);
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                transform: translateY(0);
+            }
+
+            #detailPanel.collapsed {
+                transform: translateY(100%);
+            }
+        }
+
+        .panel-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .panel-close-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            font-size: 18px;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .panel-close-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .info-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .info-value {
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .info-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            width: fit-content;
+        }
+
+        .badge-active {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--active-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .badge-suspended {
+            background-color: rgba(245, 158, 11, 0.15);
+            color: var(--suspended-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .badge-completed {
+            background-color: rgba(107, 114, 128, 0.15);
+            color: var(--completed-color);
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+
+        /* 局部角色关系图容器 */
+        .char-network-container {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            height: 220px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #charNetworkChart {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* 空状态提示 */
+        .empty-view {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .empty-view p {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* 进度条指示器 */
+        #loadingIndicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 14px;
+            color: var(--text-secondary);
+            z-index: 100;
+        }
+    </style>
+    <!-- 引入本地 ECharts 库（离线支持） -->
+    <script src="echarts.min.js"></script>
+</head>
+<body>
+    <!-- 剧情树容器 -->
+    <div id="plotContainer">
+        <div class="header-bar">
+            <h1 id="bookTitle">故事大脑</h1>
+            <p id="bookChapters">加载中...</p>
+        </div>
+        <div id="plotChart"></div>
+        <div id="loadingIndicator">正在准备故事大脑...</div>
+    </div>
+
+    <!-- 侧边详情抽屉 -->
+    <div id="detailPanel" class="collapsed">
+        <div class="panel-header">
+            <span class="panel-title" id="nodeTitle">剧情单元详情</span>
+            <button class="panel-close-btn" onclick="toggleDrawer(true)">&times;</button>
+        </div>
+        <div class="panel-content">
+            <div class="info-section">
+                <span class="info-label">状态</span>
+                <span id="nodeStatusBadge" class="info-badge">未知</span>
+            </div>
+
+            <div class="info-section">
+                <span class="info-label">章节范围</span>
+                <span id="nodeChapterRange" class="info-value">—</span>
+            </div>
+
+            <div class="info-section">
+                <span class="info-label">剧情概要</span>
+                <p id="nodeSummary" class="info-value">暂无摘要</p>
+            </div>
+
+            <div class="info-section">
+                <span class="info-label">氛围与场景变迁</span>
+                <p id="nodeAtmosphere" class="info-value" style="white-space: pre-line;">暂无分析</p>
+            </div>
+
+            <div class="info-section">
+                <span class="info-label">局部人物网</span>
+                <div class="char-network-container">
+                    <div id="charNetworkChart"></div>
+                    <div id="charNetworkEmpty" class="empty-view" style="display: none;">
+                        <p>该剧情节点无活跃人际关系</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let plotChart = null;
+        let charNetworkChart = null;
+        let storyData = null;
+        let isDarkMode = true;
+
+        // 初始化图表
+        function initCharts() {
+            plotChart = echarts.init(document.getElementById('plotChart'));
+            charNetworkChart = echarts.init(document.getElementById('charNetworkChart'));
+            
+            window.addEventListener('resize', () => {
+                plotChart && plotChart.resize();
+                charNetworkChart && charNetworkChart.resize();
+            });
+
+            // 监听剧情树节点点击事件
+            plotChart.on('click', function (params) {
+                if (params.dataType === 'node' && params.data && params.data.plotId) {
+                    showNodeDetail(params.data.plotId);
+                }
+            });
+        }
+
+        // 开关抽屉
+        function toggleDrawer(collapse) {
+            const panel = document.getElementById('detailPanel');
+            if (collapse) {
+                panel.classList.add('collapsed');
+            } else {
+                panel.classList.remove('collapsed');
+            }
+            setTimeout(() => {
+                charNetworkChart && charNetworkChart.resize();
+            }, 300);
+        }
+
+        // 显示节点详情
+        function showNodeDetail(plotId) {
+            if (!storyData || !storyData.nodes || !storyData.nodes[plotId]) return;
+            const node = storyData.nodes[plotId];
+            
+            document.getElementById('nodeTitle').innerText = node.title || '剧情详情';
+            
+            // 状态 Badge
+            const statusBadge = document.getElementById('nodeStatusBadge');
+            statusBadge.className = 'info-badge';
+            if (node.status === 'active') {
+                statusBadge.innerText = '活跃 (Active)';
+                statusBadge.classList.add('badge-active');
+            } else if (node.status === 'suspended') {
+                statusBadge.innerText = '挂起 (Suspended)';
+                statusBadge.classList.add('badge-suspended');
+            } else {
+                statusBadge.innerText = '已折叠 (Completed)';
+                statusBadge.classList.add('badge-completed');
+            }
+
+            document.getElementById('nodeChapterRange').innerText = node.chapterRange || '未指定范围';
+            document.getElementById('nodeSummary').innerText = node.summary || '暂无详细摘要。';
+            document.getElementById('nodeAtmosphere').innerText = node.narrationAnalysis || '暂无环境和场景变迁分析。';
+
+            // 渲染局部人物网
+            renderLocalCharacterNetwork(node, plotId);
+
+            // 展开面板
+            toggleDrawer(false);
+        }
+
+        // 计算剧情树的层次结构
+        function calculateLayout(nodes, rootId) {
+            const levels = {};
+            const visited = new Set();
+            
+            // 1. 深度优先搜索/拓扑排序来决定每个节点的层级
+            function dfs(nodeId, depth) {
+                if (visited.has(nodeId)) {
+                    levels[nodeId] = Math.max(levels[nodeId] || 0, depth);
+                    return;
+                }
+                visited.add(nodeId);
+                levels[nodeId] = depth;
+
+                const node = nodes[nodeId];
+                if (node && node.childNodes) {
+                    node.childNodes.forEach(childId => {
+                        dfs(childId, depth + 1);
+                    });
+                }
+            }
+
+            // 从 root 开始
+            if (rootId && nodes[rootId]) {
+                dfs(rootId, 0);
+            }
+
+            // 处理可能断开的节点
+            Object.keys(nodes).forEach(id => {
+                if (levels[id] === undefined) {
+                    dfs(id, 0);
+                }
+            });
+
+            // 2. 按层级将节点分组
+            const groups = {};
+            Object.entries(levels).forEach(([id, depth]) => {
+                if (!groups[depth]) groups[depth] = [];
+                groups[depth].push(id);
+            });
+
+            // 3. 计算坐标
+            const chartNodes = [];
+            const chartLinks = [];
+            
+            const maxDepth = Math.max(...Object.values(levels), 0);
+            const containerWidth = document.getElementById('plotChart').clientWidth || window.innerWidth;
+            const containerHeight = document.getElementById('plotChart').clientHeight || window.innerHeight;
+            
+            // 水平间距
+            const stepX = maxDepth > 0 ? (containerWidth - 200) / maxDepth : 0;
+            const startX = 100;
+
+            Object.entries(groups).forEach(([depthStr, ids]) => {
+                const depth = parseInt(depthStr);
+                const count = ids.length;
+                const x = startX + depth * Math.max(stepX, 150);
+                
+                ids.forEach((id, index) => {
+                    const node = nodes[id];
+                    if (!node) return;
+
+                    // 垂直均分
+                    const y = (containerHeight / (count + 1)) * (index + 1);
+
+                    // 颜色配置
+                    let color = 'var(--active-color)';
+                    let glow = 'var(--active-glow)';
+                    if (node.status === 'suspended') {
+                        color = 'var(--suspended-color)';
+                        glow = 'var(--suspended-glow)';
+                    } else if (node.status === 'completed') {
+                        color = 'var(--completed-color)';
+                        glow = 'var(--completed-glow)';
+                    }
+
+                    chartNodes.push({
+                        id: id,
+                        name: node.title,
+                        plotId: id,
+                        x: x,
+                        y: y,
+                        fixed: true,
+                        value: node.chapterRange,
+                        symbolSize: 32,
+                        itemStyle: {
+                            color: color,
+                            shadowBlur: 15,
+                            shadowColor: glow,
+                            borderWidth: 2,
+                            borderColor: isDarkMode ? '#1e293b' : '#ffffff'
+                        },
+                        label: {
+                            show: true,
+                            position: 'bottom',
+                            color: isDarkMode ? '#f3f4f6' : '#111827',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            distance: 10,
+                            backgroundColor: isDarkMode ? 'rgba(15, 23, 42, 0.65)' : 'rgba(243, 244, 246, 0.85)',
+                            padding: [4, 8],
+                            borderRadius: 6,
+                            borderWidth: 1,
+                            borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.15)' : 'rgba(0, 0, 0, 0.08)',
+                            formatter: '{b}'
+                        }
+                    });
+
+                    // 边
+                    if (node.childNodes) {
+                        node.childNodes.forEach(childId => {
+                            if (nodes[childId]) {
+                                chartLinks.push({
+                                    source: id,
+                                    target: childId,
+                                    lineStyle: {
+                                        width: 2.5,
+                                        curveness: 0.1,
+                                        color: isDarkMode ? 'rgba(59, 130, 246, 0.4)' : 'rgba(37, 99, 235, 0.35)'
+                                    },
+                                    symbol: ['none', 'arrow'],
+                                    symbolSize: [0, 10]
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+
+            return { chartNodes, chartLinks };
+        }
+
+        // 渲染剧情拓扑图
+        function renderPlotGraph(brain) {
+            const { chartNodes, chartLinks } = calculateLayout(brain.nodes, brain.rootNodeId);
+            
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        if (params.dataType === 'node') {
+                            return `<strong>${params.name}</strong><br/>范围: ${params.value || '未知'}`;
+                        }
+                        return '';
+                    },
+                    backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
+                    textStyle: { color: isDarkMode ? '#f3f4f6' : '#111827' },
+                    borderColor: 'rgba(255,255,255,0.1)'
+                },
+                series: [{
+                    type: 'graph',
+                    layout: 'none',
+                    data: chartNodes,
+                    links: chartLinks,
+                    roam: true,
+                    label: {
+                        show: true,
+                        position: 'bottom',
+                        formatter: '{b}'
+                    },
+                    lineStyle: {
+                        color: 'source',
+                        curveness: 0.2
+                    },
+                    emphasis: {
+                        focus: 'adjacency',
+                        lineStyle: {
+                            width: 4
+                        }
+                    }
+                }]
+            };
+
+            plotChart.setOption(option);
+        }
+
+        // 渲染局部人物网 (力导向图)
+        function renderLocalCharacterNetwork(node, plotId) {
+            const network = node.localNetwork || {};
+            const activeChars = network.activeCharacters || [];
+            const links = network.links || [];
+            const registry = storyData.globalRegistry ? (storyData.globalRegistry.characters || {}) : {};
+
+            if (activeChars.length === 0) {
+                document.getElementById('charNetworkChart').style.display = 'none';
+                document.getElementById('charNetworkEmpty').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('charNetworkChart').style.display = 'block';
+            document.getElementById('charNetworkEmpty').style.display = 'none';
+
+            // 构建节点
+            const graphNodes = activeChars.map(charId => {
+                const info = registry[charId] || {};
+                const name = info.name || charId;
+                
+                // 给主角特殊标记
+                const isMainChar = (charId === 'char_001'); // 假设 char_001 是主角
+
+                return {
+                    id: charId,
+                    name: name,
+                    symbolSize: isMainChar ? 36 : 24,
+                    itemStyle: {
+                        color: isMainChar ? '#3b82f6' : '#10b981',
+                        shadowBlur: 10,
+                        shadowColor: isMainChar ? 'rgba(59, 130, 246, 0.5)' : 'rgba(16, 185, 129, 0.5)',
+                        borderWidth: 1.5,
+                        borderColor: isDarkMode ? '#1e293b' : '#ffffff'
+                    },
+                    label: {
+                        show: true,
+                        position: 'inside',
+                        fontSize: 10,
+                        fontWeight: 'bold',
+                        color: '#ffffff'
+                    }
+                };
+            });
+
+            // 构建关系边
+            const graphLinks = links.map(link => {
+                return {
+                    source: link.from,
+                    target: link.to,
+                    value: link.relation,
+                    label: {
+                        show: true,
+                        formatter: '{c}',
+                        fontSize: 8.5,
+                        fontWeight: 'bold',
+                        color: isDarkMode ? '#cbd5e1' : '#1e293b',
+                        backgroundColor: isDarkMode ? 'rgba(30, 41, 59, 0.85)' : 'rgba(255, 255, 255, 0.95)',
+                        padding: [3, 5],
+                        borderRadius: 4,
+                        borderWidth: 1,
+                        borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'
+                    },
+                    lineStyle: {
+                        color: isDarkMode ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.18)',
+                        width: 2
+                    }
+                };
+            });
+
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        if (params.dataType === 'edge') {
+                            // 查找交互 context 说明
+                            const edgeData = links.find(l => l.from === params.data.source && l.to === params.data.target);
+                            const ctx = edgeData && edgeData.context ? `<br/><span style="font-size:11px;color:#9ca3af">${edgeData.context}</span>` : '';
+                            return `关系: <strong>${params.data.value}</strong>${ctx}`;
+                        } else {
+                            const info = registry[params.data.id] || {};
+                            const aliases = info.aliases && info.aliases.length > 0 ? `<br/>别称: ${info.aliases.join('、')}` : '';
+                            return `角色: <strong>${params.name}</strong>${aliases}`;
+                        }
+                    },
+                    backgroundColor: isDarkMode ? '#1e293b' : '#ffffff',
+                    textStyle: { color: isDarkMode ? '#f3f4f6' : '#111827' },
+                    borderColor: 'rgba(255,255,255,0.1)'
+                },
+                series: [{
+                    type: 'graph',
+                    layout: 'force',
+                    draggable: true,
+                    data: graphNodes,
+                    links: graphLinks,
+                    roam: false,
+                    force: {
+                        repulsion: 180,
+                        edgeLength: 100,
+                        gravity: 0.08
+                    },
+                    label: {
+                        show: true
+                    },
+                    emphasis: {
+                        focus: 'adjacency'
+                    }
+                }]
+            };
+
+            charNetworkChart.setOption(option, true);
+        }
+
+        // 主入口：加载数据
+        function initStoryBrain(brain) {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            if (!brain || !brain.nodes) {
+                document.getElementById('bookChapters').innerText = '未读取到脑图数据';
+                return;
+            }
+
+            storyData = brain;
+            document.getElementById('bookTitle').innerText = brain.bookTitle || '故事大脑';
+            document.getElementById('bookChapters').innerText = `已处理 ${brain.processedChapterCount} / ${brain.totalChapters} 章`;
+
+            // 渲染拓扑树
+            renderPlotGraph(brain);
+        }
+
+        // 由 Android 调用的主题切换
+        function setThemeMode(dark) {
+            isDarkMode = dark;
+            if (dark) {
+                document.body.classList.remove('light-mode');
+            } else {
+                document.body.classList.add('light-mode');
+            }
+            if (storyData) {
+                renderPlotGraph(storyData);
+                // 重绘局部人物网
+                const activePanel = !document.getElementById('detailPanel').classList.contains('collapsed');
+                if (activePanel) {
+                    const plotTitle = document.getElementById('nodeTitle').innerText;
+                    // 根据 Title 找 Node
+                    const node = Object.values(storyData.nodes).find(n => n.title === plotTitle);
+                    if (node) renderLocalCharacterNetwork(node, node.id);
+                }
+            }
+        }
+
+        // 初始化
+        window.onload = function() {
+            initCharts();
+
+            // 尝试从 Android 接口拉取数据
+            if (typeof Android !== 'undefined') {
+                try {
+                    // 主题
+                    if (typeof Android.isDarkMode === 'function') {
+                        setThemeMode(Android.isDarkMode());
+                    }
+                    // 加载 JSON
+                    const jsonStr = Android.getStoryBrainJson();
+                    if (jsonStr) {
+                        initStoryBrain(JSON.parse(jsonStr));
+                    }
+                } catch (e) {
+                    document.getElementById('loadingIndicator').innerText = "加载失败: " + e.message;
+                }
+            } else {
+                // Mock 数据用于浏览器测试
+                const mockData = {
+                    "bookTitle": "诛仙",
+                    "processedChapterCount": 15,
+                    "totalChapters": 200,
+                    "rootNodeId": "node_001",
+                    "globalRegistry": {
+                        "characters": {
+                            "char_001": {"name": "张小凡", "aliases": ["鬼厉", "小凡"]},
+                            "char_002": {"name": "碧瑶", "aliases": []},
+                            "char_003": {"name": "陆雪琪", "aliases": []},
+                            "char_004": {"name": "林惊羽", "aliases": []}
+                        }
+                    },
+                    "nodes": {
+                        "node_001": {
+                            "id": "node_001",
+                            "title": "草庙村惨案",
+                            "chapterRange": "ch_0001-ch_0005",
+                            "summary": "草庙村发生惨案，全村被屠，张小凡与林惊羽幸存，被青云门收留。",
+                            "status": "completed",
+                            "childNodes": ["node_002"],
+                            "localNetwork": {
+                                "activeCharacters": ["char_001", "char_004"],
+                                "links": [
+                                    {"from": "char_001", "to": "char_004", "relation": "挚友", "context": "同村幸存遗孤"}
+                                ]
+                            }
+                        },
+                        "node_002": {
+                            "id": "node_002",
+                            "title": "青云修炼与下山",
+                            "chapterRange": "ch_0006-ch_0012",
+                            "summary": "张小凡入大竹峰修炼，资质平平。后与陆雪琪等人一同下山历练。",
+                            "status": "completed",
+                            "parentNodes": ["node_001"],
+                            "childNodes": ["node_003", "node_004"],
+                            "localNetwork": {
+                                "activeCharacters": ["char_001", "char_003", "char_004"],
+                                "links": [
+                                    {"from": "char_001", "to": "char_003", "relation": "同门", "context": "七脉会武相识并下山历练"}
+                                ]
+                            }
+                        },
+                        "node_003": {
+                            "id": "node_003",
+                            "title": "滴血洞副本",
+                            "chapterRange": "ch_0013-ch_0015",
+                            "summary": "张小凡与魔教妖女碧瑶被困空桑山死灵渊滴血洞，共经生死，互生情愫。",
+                            "status": "active",
+                            "parentNodes": ["node_002"],
+                            "narrationAnalysis": "滴血洞内阴暗潮湿，气氛暧昧与绝望并存。石壁滴水滴答，象征时间流逝与生死倒计时。",
+                            "localNetwork": {
+                                "activeCharacters": ["char_001", "char_002"],
+                                "links": [
+                                    {"from": "char_001", "to": "char_002", "relation": "生死之交", "context": "合欢铃与烧火棍共鸣，患难见真情"}
+                                ]
+                            }
+                        },
+                        "node_004": {
+                            "id": "node_004",
+                            "title": "万蝠古窟暗线",
+                            "chapterRange": "ch_0013-ch_0014",
+                            "summary": "林惊羽与陆雪琪探寻万蝠古窟，对抗炼血堂余孽。",
+                            "status": "suspended",
+                            "parentNodes": ["node_002"],
+                            "localNetwork": {
+                                "activeCharacters": ["char_003", "char_004"],
+                                "links": [
+                                    {"from": "char_004", "to": "char_003", "relation": "并肩作战", "context": "剿灭魔教余孽"}
+                                ]
+                            }
+                        }
+                    }
+                };
+                initStoryBrain(mockData);
+            }
+        };
+    </script>
+</body>
+</html>

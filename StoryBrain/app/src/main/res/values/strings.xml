@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">故事大脑</string>
+    <string name="title_settings">LLM 设置</string>
+    <string name="title_plot_graph">故事大脑</string>
+    <string name="action_graph">剧情图谱</string>
+    <string name="action_settings">设置</string>
+</resources>

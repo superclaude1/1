@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ============================================================
+         Story Brain 品牌主色（苹果风格 Light Mode）
+         ============================================================ -->
+    <!-- 主背景：iOS Settings 风格的浅灰白 -->
+    <color name="wechat_bg">#F2F2F7</color>
+    <!-- 工具栏/导航栏：白色磨砂质感 -->
+    <color name="wechat_title_bar">#FFFFFF</color>
+    <!-- 分隔线状态栏：极浅灰 -->
+    <color name="wechat_status_bar">#F2F2F7</color>
+    <!-- 主要文字色：近似纯黑，略带温度 -->
+    <color name="wechat_title_text">#1C1C1E</color>
+    <!-- 辅助提示色：iOS 系统灰 -->
+    <color name="wechat_hint">#8E8E93</color>
+    <!-- 品牌绿：类 iOS 系统绿，更鲜亮 -->
+    <color name="wechat_green">#34C759</color>
+    <!-- 主背景白（卡片） -->
+    <color name="wechat_white">#FFFFFF</color>
+    <!-- 气泡文字：接近黑 -->
+    <color name="wechat_bubble_text">#1C1C1E</color>
+    <!-- 旁白字色：iOS 标注灰 -->
+    <color name="wechat_narration">#6D6D72</color>
+    <!-- 分隔线：iOS 系统线条，非常浅 -->
+    <color name="wechat_divider">#C6C6C8</color>
+
+    <!-- ============================================================
+         辅助功能色（Apple 调色板）
+         ============================================================ -->
+    <color name="apple_blue">#007AFF</color>
+    <color name="apple_indigo">#5856D6</color>
+    <color name="apple_teal">#30B0C7</color>
+    <color name="apple_orange">#FF9500</color>
+    <color name="apple_red">#FF3B30</color>
+    <color name="apple_separator">#E5E5EA</color>
+    <color name="apple_fill_secondary">#F2F2F7</color>
+    <color name="apple_fill_tertiary">#EFEFF4</color>
+
+    <!-- 对话气泡背景（浅白） -->
+    <color name="bubble_light_bg">#FFFFFF</color>
+    <!-- 旁白背景：更浅的半透明 -->
+    <color name="narration_bg">#E5E5EA</color>
+
+    <!-- 启动图标背景 -->
+    <color name="ic_launcher_background">#34C759</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- ============================================================
+         夜间模式配色（iOS Dark Mode 系统规范）
+         ============================================================ -->
+    <!-- iOS Dark 主背景：00 纯黑 -->
+    <color name="night_bg">#000000</color>
+    <!-- 分组背景：iOS Dark systemGroupedBackground -->
+    <color name="night_bg_grouped">#1C1C1E</color>
+    <!-- 工具栏/卡片背景：iOS Dark Level-2 背景 -->
+    <color name="night_title_bar">#1C1C1E</color>
+    <!-- 对话气泡背景 -->
+    <color name="night_bubble">#2C2C2E</color>
+    <!-- 文字色 -->
+    <color name="night_bubble_text">#FFFFFF</color>
+    <!-- 旁白字色 -->
+    <color name="night_narration">#AEAEB2</color>
+    <!-- 辅助提示色 -->
+    <color name="night_hint">#8D8D92</color>
+    <!-- 分隔线 -->
+    <color name="night_divider">#38383A</color>
+    <!-- 夜间旁白背景 -->
+    <color name="night_narration_bg">#2C2C2E</color>
+</resources>
