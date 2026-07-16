@@ -13,15 +13,13 @@ interface TtsLogPayload {
 }
 
 interface TtsSettings {
-  temperature_dialogue: number;
-  temperature_narration: number;
-  top_p_dialogue: number;
-  top_p_narration: number;
+  temperature: number;
+  top_p: number;
   top_k: number;
-  enable_text_normalization: string;
-  enable_normalize_tts_text: string;
+  speed: number;
+  stream: boolean;
   enable_laugh: boolean;
-  enable_break: boolean;
+  enable_breath: boolean;
 }
 
 const VOICE_DESCRIPTIONS: Record<string, { gender: string, age: string, style: string, desc: string, seed: number }> = {
@@ -57,15 +55,13 @@ export default function App() {
 
   // ChatTTS Settings states
   const [settings, setSettings] = useState<TtsSettings>({
-    temperature_dialogue: 0.35,
-    temperature_narration: 0.15,
-    top_p_dialogue: 0.75,
-    top_p_narration: 0.70,
-    top_k: 20,
-    enable_text_normalization: "0",
-    enable_normalize_tts_text: "1",
+    temperature: 0.8,
+    top_p: 0.9,
+    top_k: 50,
+    speed: 1.0,
+    stream: true,
     enable_laugh: true,
-    enable_break: true,
+    enable_breath: true,
   });
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -122,7 +118,7 @@ export default function App() {
               const extra = await response.json();
               setDevice(extra.device || "CPU");
               setLastClientIp(extra.last_client_ip || "无");
-              setModelName(extra.model_name || "MOSS-TTS-Nano");
+              setModelName(extra.model_name || "CosyVoice-3-0.5B-RL");
               setModelStatus(extra.model_status || "已加载");
             }
           } catch (err) {
@@ -148,7 +144,7 @@ export default function App() {
         setLocalIp(status.local_ip);
         setDevice(status.device || "CPU");
         setLastClientIp(status.last_client_ip || "无");
-        setModelName(status.model_name || "MOSS-TTS-Nano");
+        setModelName(status.model_name || "CosyVoice-3-0.5B-RL");
         setModelStatus(status.model_status || "已加载");
       } else {
         setServerRunning(false);
@@ -187,15 +183,13 @@ export default function App() {
   const handleSaveSettings = async (updatedSettings: TtsSettings) => {
     try {
       const formData = new FormData();
-      formData.append("temperature_dialogue", String(updatedSettings.temperature_dialogue));
-      formData.append("temperature_narration", String(updatedSettings.temperature_narration));
-      formData.append("top_p_dialogue", String(updatedSettings.top_p_dialogue));
-      formData.append("top_p_narration", String(updatedSettings.top_p_narration));
+      formData.append("temperature", String(updatedSettings.temperature));
+      formData.append("top_p", String(updatedSettings.top_p));
       formData.append("top_k", String(updatedSettings.top_k));
-      formData.append("enable_text_normalization", updatedSettings.enable_text_normalization);
-      formData.append("enable_normalize_tts_text", updatedSettings.enable_normalize_tts_text);
-      formData.append("enable_laugh", updatedSettings.enable_laugh ? "1" : "0");
-      formData.append("enable_break", updatedSettings.enable_break ? "1" : "0");
+      formData.append("speed", String(updatedSettings.speed));
+      formData.append("stream", updatedSettings.stream ? "true" : "false");
+      formData.append("enable_laugh", updatedSettings.enable_laugh ? "true" : "false");
+      formData.append("enable_breath", updatedSettings.enable_breath ? "true" : "false");
 
       const response = await fetch(`http://127.0.0.1:${port}/api/settings`, {
         method: "POST",
@@ -225,7 +219,7 @@ export default function App() {
       }
     } else {
       try {
-        setLogs((prev) => [...prev, "[SYSTEM] Starting MOSS-TTS-Nano FastAPI Server..."]);
+        setLogs((prev) => [...prev, "[SYSTEM] Starting CosyVoice 3 FastAPI Server..."]);
         await invoke("start_tts_server", { port });
         setServerRunning(true);
       } catch (e: any) {
@@ -516,8 +510,8 @@ export default function App() {
           {activeTab === "tuning" && (
             <div className="flex flex-col space-y-6 flex-1 overflow-y-auto max-w-2xl mx-auto w-full">
               <div>
-                <h2 className="text-lg font-bold tracking-tight">大模型参数配置</h2>
-                <p className="text-xs text-slate-400">微调 MOSS-TTS-Nano 模型生成参数，对测试沙盒与安卓客户端实时生效</p>
+                <h2 className="text-lg font-bold tracking-tight">CosyVoice 3 参数配置</h2>
+                <p className="text-xs text-slate-400">微调 CosyVoice 3 推理参数，对测试沙盒与安卓客户端实时生效</p>
               </div>
 
               {!serverRunning && (
@@ -527,118 +521,95 @@ export default function App() {
               )}
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {/* Temp Dialogue */}
                 <div className="bg-slate-950/40 border border-white/[0.04] rounded-2xl p-4 space-y-2.5">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-semibold text-slate-300">角色对话温度 (Temp)</span>
-                    <span className="text-xs font-bold text-cyan-400">{settings.temperature_dialogue}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0.05"
-                    max="1.0"
-                    step="0.05"
-                    value={settings.temperature_dialogue}
-                    onChange={(e) => handleSaveSettings({ ...settings, temperature_dialogue: Number(e.target.value) })}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                  />
-                  <p className="text-[10px] text-slate-500">控制角色说话的感情起伏与变化程度，越高音调越活泼。</p>
-                </div>
-
-                {/* Temp Narration */}
-                <div className="bg-slate-950/40 border border-white/[0.04] rounded-2xl p-4 space-y-2.5">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-semibold text-slate-300">旁白解说温度 (Temp)</span>
-                    <span className="text-xs font-bold text-cyan-400">{settings.temperature_narration}</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0.05"
-                    max="1.0"
-                    step="0.05"
-                    value={settings.temperature_narration}
-                    onChange={(e) => handleSaveSettings({ ...settings, temperature_narration: Number(e.target.value) })}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
-                  />
-                  <p className="text-[10px] text-slate-500">建议设置较低的值，使旁白男声更加沉稳、平顺、无情绪起伏。</p>
-                </div>
-
-                {/* Top P Dialogue */}
-                <div className="bg-slate-950/40 border border-white/[0.04] rounded-2xl p-4 space-y-2.5">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-semibold text-slate-300">对话核采样阈值 (Top P)</span>
-                    <span className="text-xs font-bold text-purple-400">{settings.top_p_dialogue}</span>
+                    <span className="text-xs font-semibold text-slate-300">采样温度 (Temperature)</span>
+                    <span className="text-xs font-bold text-cyan-400">{settings.temperature}</span>
                   </div>
                   <input
                     type="range"
                     min="0.1"
-                    max="0.95"
+                    max="1.5"
                     step="0.05"
-                    value={settings.top_p_dialogue}
-                    onChange={(e) => handleSaveSettings({ ...settings, top_p_dialogue: Number(e.target.value) })}
-                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500"
+                    value={settings.temperature}
+                    onChange={(e) => handleSaveSettings({ ...settings, temperature: Number(e.target.value) })}
+                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
                   />
+                  <p className="text-[10px] text-slate-500">越高越有变化和表现力；旁白建议 0.6-0.8，角色对话可用 0.8-1.1。</p>
                 </div>
 
-                {/* Top P Narration */}
                 <div className="bg-slate-950/40 border border-white/[0.04] rounded-2xl p-4 space-y-2.5">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-semibold text-slate-300">旁白核采样阈值 (Top P)</span>
-                    <span className="text-xs font-bold text-purple-400">{settings.top_p_narration}</span>
+                    <span className="text-xs font-semibold text-slate-300">核采样阈值 (Top P)</span>
+                    <span className="text-xs font-bold text-purple-400">{settings.top_p}</span>
                   </div>
                   <input
                     type="range"
                     min="0.1"
-                    max="0.95"
+                    max="1.0"
                     step="0.05"
-                    value={settings.top_p_narration}
-                    onChange={(e) => handleSaveSettings({ ...settings, top_p_narration: Number(e.target.value) })}
+                    value={settings.top_p}
+                    onChange={(e) => handleSaveSettings({ ...settings, top_p: Number(e.target.value) })}
                     className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-purple-500"
                   />
+                  <p className="text-[10px] text-slate-500">限制采样候选范围，降低可减少跑调和奇怪停顿。</p>
                 </div>
 
-                {/* Top K */}
                 <div className="bg-slate-950/40 border border-white/[0.04] rounded-2xl p-4 space-y-2.5">
                   <div className="flex justify-between items-center">
-                    <span className="text-xs font-semibold text-slate-300">单词随机候选范围 (Top K)</span>
+                    <span className="text-xs font-semibold text-slate-300">候选范围 (Top K)</span>
                     <span className="text-xs font-bold text-amber-400">{settings.top_k}</span>
                   </div>
                   <input
                     type="range"
-                    min="5"
-                    max="50"
+                    min="1"
+                    max="100"
                     step="1"
                     value={settings.top_k}
                     onChange={(e) => handleSaveSettings({ ...settings, top_k: Number(e.target.value) })}
                     className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500"
                   />
+                  <p className="text-[10px] text-slate-500">越小越稳定，越大越自然多样；默认 50。</p>
                 </div>
 
-                {/* Normalization switch */}
-                <div className="bg-slate-950/40 border border-white/[0.04] rounded-2xl p-4 space-y-2.5 flex flex-col justify-between">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-semibold text-slate-300">英文/数字数字归一化</span>
-                    <select
-                      value={settings.enable_text_normalization}
-                      onChange={(e) => handleSaveSettings({ ...settings, enable_text_normalization: e.target.value })}
-                      className="bg-slate-900 border border-white/[0.08] text-xs rounded-lg px-2.5 py-1.5 outline-none focus:border-cyan-500"
-                    >
-                      <option value="1">强制开启</option>
-                      <option value="0">自动选择</option>
-                    </select>
+                <div className="bg-slate-950/40 border border-white/[0.04] rounded-2xl p-4 space-y-2.5">
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs font-semibold text-slate-300">语速 (Speed)</span>
+                    <span className="text-xs font-bold text-emerald-400">{settings.speed}x</span>
                   </div>
-                  <p className="text-[10px] text-slate-500">启用后会将“123”自动转换为“一百二十三”再进行大模型合成。</p>
+                  <input
+                    type="range"
+                    min="0.5"
+                    max="1.5"
+                    step="0.05"
+                    value={settings.speed}
+                    onChange={(e) => handleSaveSettings({ ...settings, speed: Number(e.target.value) })}
+                    className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                  />
+                  <p className="text-[10px] text-slate-500">控制输出播放语速；1.0 为原速。</p>
                 </div>
               </div>
 
-              {/* Preprocessing Toggles */}
               <div className="bg-slate-950/20 border border-white/[0.04] rounded-2xl p-5 space-y-3.5">
-                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">大模型语气辅助前置处理</h3>
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">CosyVoice 3 语气辅助处理</h3>
                 
                 <div className="flex items-center justify-between">
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium text-slate-200">融合情感笑声 ([laugh] 标签)</span>
-                    <span className="text-[10px] text-slate-500">检测到包含“笑、哈、呵”等提示词时，前置融入语气笑声</span>
+                    <span className="text-xs font-medium text-slate-200">流式推理 (Stream)</span>
+                    <span className="text-[10px] text-slate-500">开启后降低首包延迟，更适合手机端实时试听。</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={settings.stream}
+                    onChange={(e) => handleSaveSettings({ ...settings, stream: e.target.checked })}
+                    className="h-4 w-4 accent-cyan-500 rounded border-slate-800"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between pt-3.5 border-t border-white/[0.04]">
+                  <div className="flex flex-col">
+                    <span className="text-xs font-medium text-slate-200">融合自然笑声 ([laughter] 标签)</span>
+                    <span className="text-[10px] text-slate-500">检测“哈哈、呵呵、笑”等文本时自动加入笑声控制标签。</span>
                   </div>
                   <input
                     type="checkbox"
@@ -650,13 +621,13 @@ export default function App() {
 
                 <div className="flex items-center justify-between pt-3.5 border-t border-white/[0.04]">
                   <div className="flex flex-col">
-                    <span className="text-xs font-medium text-slate-200">标点换气停顿 ([uv_break] / [lbreak] 辅助)</span>
-                    <span className="text-[10px] text-slate-500">自动解析逗号句号插入微小喘息与停顿，增强人类朗读呼吸感</span>
+                    <span className="text-xs font-medium text-slate-200">标点换气停顿 ([breath] 标签)</span>
+                    <span className="text-[10px] text-slate-500">在句号等位置插入自然换气，增强广播剧朗读感。</span>
                   </div>
                   <input
                     type="checkbox"
-                    checked={settings.enable_break}
-                    onChange={(e) => handleSaveSettings({ ...settings, enable_break: e.target.checked })}
+                    checked={settings.enable_breath}
+                    onChange={(e) => handleSaveSettings({ ...settings, enable_breath: e.target.checked })}
                     className="h-4 w-4 accent-emerald-500 rounded border-slate-800"
                   />
                 </div>

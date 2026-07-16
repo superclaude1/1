@@ -188,11 +188,11 @@ class TtsManager(private val context: Context) : TextToSpeech.OnInitListener {
             }
             else -> { // server
                 Thread {
+                    // CosyVoice 3 服务端签名: text + demo_id (+ speed)
                     val formBody = FormBody.Builder()
                         .add("text", text)
                         .add("demo_id", demoId)
-                        .add("enable_text_normalization", "0")
-                        .add("enable_normalize_tts_text", "1")
+                        .add("speed", "1.0")
                         .build()
 
                     val serverUrl = settingsManager.loadTtsServerUrl()
@@ -213,13 +213,13 @@ class TtsManager(private val context: Context) : TextToSpeech.OnInitListener {
                             val audioBytes = Base64.decode(audioBase64, Base64.DEFAULT)
                             playAudioBytes(audioBytes, ".wav")
                         } else {
-                            Log.e("TtsManager", "MOSS-TTS request failed: ${response.code} ${response.message}")
+                            Log.e("TtsManager", "CosyVoice request failed: ${response.code} ${response.message}")
                             android.os.Handler(android.os.Looper.getMainLooper()).post {
                                 onSpeakCompleteListener?.invoke()
                             }
                         }
                     } catch (e: Exception) {
-                        Log.e("TtsManager", "MOSS-TTS network error", e)
+                        Log.e("TtsManager", "CosyVoice network error", e)
                         android.os.Handler(android.os.Looper.getMainLooper()).post {
                             onSpeakCompleteListener?.invoke()
                         }

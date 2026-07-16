@@ -47,7 +47,7 @@ sys.path.insert(0, COSYVOICE_DIR)
 sys.path.insert(0, os.path.join(COSYVOICE_DIR, "third_party", "Matcha-TTS"))
 
 import soundfile as sf
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, Request, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
@@ -413,10 +413,42 @@ async def save_settings(
 
 
 @app.post("/api/speaker/upload")
-async def upload_speaker(request: Request):
-    """上传自定义参考音频来注册新音色"""
-    # ... 简化处理: 接收 Base64 WAV
-    pass
+async def upload_speaker(
+    spk_id: str = Form(...),
+    prompt_text: str = Form("希望你以后能够做的比我还好呦。"),
+    audio: UploadFile = File(...),
+):
+    """上传自定义参考音频（3-10s WAV）注册零样本音色"""
+    if cosyvoice is None:
+        return JSONResponse({"status": "error", "message": "Model not loaded"}, status_code=503)
+    try:
+        safe_id = "".join(c for c in spk_id if c.isalnum() or c in "-_")
+        if not safe_id:
+            return JSONResponse({"status": "error", "message": "invalid spk_id"}, status_code=400)
+        dst = CUSTOM_VOICES_DIR / f"{safe_id}.wav"
+        with open(dst, "wb") as f:
+            f.write(await audio.read())
+        ok = cosyvoice.add_zero_shot_spk(prompt_text, str(dst), safe_id)
+        if ok:
+            speaker_cache[safe_id] = True
+            while len(speaker_cache) > MAX_SPK_CACHE:
+                speaker_cache.popitem(last=False)
+            logger.info(f"Registered custom speaker: {safe_id}")
+            return {"status": "success", "spk_id": safe_id, "path": str(dst)}
+        return JSONResponse({"status": "error", "message": "add_zero_shot_spk failed"}, status_code=500)
+    except Exception as e:
+        logger.error(f"upload_speaker failed: {e}", exc_info=True)
+        return JSONResponse({"status": "error", "message": str(e)}, status_code=500)
+
+
+@app.get("/api/speakers")
+async def list_speakers():
+    """列出所有可用音色"""
+    demos = [{"id": k, **v} for k, v in DEMO_VOICES.items()]
+    custom = []
+    for p in CUSTOM_VOICES_DIR.glob("*.wav"):
+        custom.append({"id": p.stem, "path": str(p), "custom": True})
+    return {"demo": demos, "custom": custom, "cached": list(speaker_cache.keys())}
 
 
 # ===== 静态文件服务 =====
